@@ -1,0 +1,27 @@
+name: Windows Executable Example
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  windows-job:
+    runs-on: windows-latest
+    steps:
+    
+      # Check out the repository code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Create a PowerShell script to open Notepad, write to a file, and save it
+      - name: Create a text file with Notepad
+        run: |
+          $filePath = ".\example.txt"
+          $text = "This is a test file created by GitHub Actions."
+          Start-Process -FilePath "notepad.exe" -ArgumentList $filePath -PassThru
+          Start-Sleep -Seconds 5
+          Add-Content -Path $filePath -Value $text
+          Start-Process -FilePath "notepad.exe" -ArgumentList "/p $filePath"
+          Start-Sleep -Seconds 5
+          Get-Process -Name notepad | Stop-Process
